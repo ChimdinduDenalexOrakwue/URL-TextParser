@@ -4,6 +4,7 @@ import urllib.request
 type = input("enter 'text' or 'url':   ")
 texturl = input("enter:   ")
 
+#positive word samples
 words = { "great":"positive","good" :"positive", "awesome": "positive", "great" : "positive" , "amazing" : "positive", "cool": "positive", "wow": "positive", "lame" : "negative", "bad":"negative", "shit":"negative", "suck":"negative", "sucks":"negative", "awesome":"positive"}
 
 def parse_text(text):
@@ -22,6 +23,7 @@ def parse_text(text):
     
 #uses positive and negative word values to find the overall tone
                     
+#return overall tone of text
 def tone(positive, negative):
     result = ""
     if positive + negative == 0:
@@ -37,14 +39,12 @@ def tone(positive, negative):
         result = "overall positive"
         return result
 
+#calls tone()
 def find_tone(text): 
     final = tone(parse_text(text))
     return final
 
-
-############################
-
-
+#return next link in html
 def get_next_target(page):
     start_link = page.find('<a href=')
     if start_link == -1: 
@@ -54,6 +54,7 @@ def get_next_target(page):
     url = page[start_quote + 1:end_quote]
     return url, end_quote
 
+#return next html <img> content/link
 def get_next_target_picture(page):
     start_link = page.find('<img src=')
     if start_link == -1: 
@@ -67,10 +68,11 @@ def get_urls(url):
     urls = re.findall('http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+', url)
     return urls
 
+#returns union of two lists
 def union(p,q):
-    if p == [] or q != []:
+    if p == [] and q != []:
         return q
-    elif p != [] or q == []:
+    elif p != [] and q == []:
         return p
     else:
         for e in q:
@@ -78,7 +80,7 @@ def union(p,q):
                 p.append(e)
                 return p
 
-#udacity link algorithm
+#get all links in page
 def get_all_links(page):
     links = []
     while True:
@@ -89,7 +91,8 @@ def get_all_links(page):
         else:
             break
     return links
-
+    
+#returns next picture in html
 def get_next_picture(page):
     start_link = page.find('<img src=')
     if start_link == -1: 
@@ -99,6 +102,7 @@ def get_next_picture(page):
     picture = page[start_quote + 1:end_quote]
     return picture, end_quote
 
+#returns list of all pictures in html
 def get_all_pictures(page):
     pictures = []
     while True:
@@ -110,11 +114,7 @@ def get_all_pictures(page):
             break
     return pictures
     
-
-##############
-
-
-
+#parse numbers from html
 def number_parse(text):
     numbers = []
     string = text.split(" ")
@@ -128,7 +128,7 @@ def number_parse(text):
                 numbers.append(int(word))
     return numbers
 
-
+# returns word count of html
 def word_count(text):
     number = 0
     text = text.split(" ")
@@ -136,6 +136,7 @@ def word_count(text):
         number = number + 1
     return number
 
+#returns amount of uppercase and lowercase letter in html
 def word_info(text):
     caps = 0
     lowercase = 0
@@ -147,11 +148,12 @@ def word_info(text):
             lowercase = lowercase + 1
     return caps, lowercase
 
-
+#remove given value from given text
 def removern(text, value):
     text.split(" ")
     return [word for word in text if word != value]
 
+#remove html elements from text
 def remove_html(text):
     ntext = str(text)
     remove = re.compile('<.*?>')
@@ -160,6 +162,7 @@ def remove_html(text):
     new2 = "".join(newtext)
     return new2
 
+#returns true if input is in text, count of occurences, otherwise return false
 def word_search(input, text):
     count = 0
     words = text.split(" ")
@@ -171,6 +174,7 @@ def word_search(input, text):
     else:
         return false, count
         
+#parse html
 def text_parse_url(url):
     link = ""
     if url.find("http") != -1:
@@ -183,36 +187,23 @@ def text_parse_url(url):
     links = get_all_links(str(text))
     pictures = get_all_pictures(str(text))
     text = remove_html(text)
-    print
-    print("Links: " + str(links))
-    print
-    print
-    print
-    print
-    print
-    print("Pictures " + str(pictures))
-    print
-    print
-    print
-    print
+    print("\nLinks: " + str(links) + "\n\n\n\n")
+    print("Pictures " + str(pictures) + "\n\n\n\n")
     print(text)
 
+#parse text
 def text_parse(text):
-    
-    
     links = get_all_links(text)
     pictures = get_all_pictures(text)
     numbers = number_parse(text)
     wordcount = word_count(text)
     caps, lowercase = word_info(text)
-    print
-    print("Links: " + str(links))
-    print
-    print("Pictures " + str(pictures))
-    print
-    print("Numbers: " + str(numbers))
+    print("\nLinks: " + str(links))
+    print("\nPictures " + str(pictures))
+    print("\nNumbers: " + str(numbers))
     print("This text has " + str(wordcount) + " words, " + str(caps) + " capital letters, and " + str(lowercase) + " lowercase letters")
 
+#parse text or html
 def parse(text):
     if type == 'url':
         text_parse_url(text)
